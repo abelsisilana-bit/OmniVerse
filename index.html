@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniVerse - Super App Hub</title>
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse-slow { animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        
+        /* Hide scrollbars for clean horizontal scrolling lists */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 font-sans min-h-screen selection:bg-rose-500 selection:text-white relative overflow-x-hidden">
+
+    <!-- Toast Notification Box -->
+    <div id="toast" class="fixed top-5 right-5 z-50 transform translate-y-[-200%] transition-all duration-300 bg-zinc-900 border border-zinc-800 text-zinc-200 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-xl"></i>
+        <span id="toast-message" class="text-sm font-medium">Notification message</span>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 0. APP LAUNCHER SCREEN (Simulated Home Screen) -->
+    <!-- ========================================== -->
+    <section id="screen-launcher" class="fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center p-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-900/20 via-zinc-950 to-zinc-950">
+        <div class="text-center space-y-6 max-w-sm w-full">
+            <div class="inline-block p-4 rounded-3xl bg-zinc-900/80 border border-zinc-800 shadow-2xl backdrop-blur-xl">
+                <p class="text-xs text-zinc-400 font-medium mb-4 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-mobile-screen text-rose-500"></i> Tap App Icon to Open
+                </p>
+                
+                <!-- App Icon Button -->
+                <button onclick="launchApp()" class="group relative w-24 h-24 mx-auto rounded-3xl bg-gradient-to-tr from-rose-500 via-purple-600 to-amber-500 flex flex-col items-center justify-center shadow-2xl shadow-rose-500/30 hover:scale-105 active:scale-95 transition-all duration-300">
+                    <div class="absolute inset-0 rounded-3xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <i class="fa-solid fa-infinity text-white text-4xl group-hover:rotate-180 transition-transform duration-700"></i>
+                    <span class="absolute -bottom-6 text-xs font-bold tracking-tight text-zinc-200 group-hover:text-rose-400 transition-colors">OmniVerse</span>
+                </button>
+            </div>
+
+            <p class="text-xs text-zinc-500 pt-6">
+                Combining Facebook, Instagram, Threads, TikTok, Twitch, Messenger, Apple Music & Spotify.
+            </p>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 1. SPLASH / LOADING SCREEN -->
+    <!-- ========================================== -->
+    <section id="screen-splash" class="fixed inset-0 z-50 bg-zinc-950 hidden flex-col items-center justify-center p-6">
+        <div class="text-center space-y-6 animate-pulse-slow">
+            <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-rose-500 via-purple-600 to-amber-500 flex items-center justify-center shadow-2xl shadow-rose-500/40">
+                <i class="fa-solid fa-infinity text-white text-3xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">OmniVerse</h1>
+            <div class="flex items-center justify-center gap-2 text-rose-500 text-sm">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span class="text-xs text-zinc-400 font-medium">Securing End-to-End Encryption...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 2. LOGIN / SIGNUP / AUTHENTICATION SCREEN -->
+    <!-- ========================================== -->
+    <section id="screen-auth" class="fixed inset-0 z-40 bg-zinc-950 hidden flex-col items-center justify-center p-4 md:p-6 overflow-y-auto">
+        <div class="w-full max-w-md bg-zinc-900/80 border border-zinc-800/80 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-2xl my-auto">
+            
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 via-purple-600 to-amber-500 flex items-center justify-center shadow-md">
+                    <i class="fa-solid fa-infinity text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white tracking-tight">Welcome to OmniVerse</h2>
+                    <p class="text-xs text-zinc-400">All-in-one social & media super app</p>
+                </div>
+            </div>
+
+            <!-- Security Badge -->
+            <div class="mb-6 p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3 text-emerald-400 text-xs">
+                <i class="fa-solid fa-lock text-base"></i>
+                <span>Protected by 256-bit AES encryption & Secure Vault technology.</span>
+            </div>
+
+            <!-- Form Tab Selector -->
+            <div class="grid grid-cols-2 bg-zinc-950 p-1 rounded-xl mb-6 text-xs font-semibold">
+                <button id="auth-tab-login" onclick="toggleAuthMode('login')" class="py-2.5 rounded-lg bg-rose-600 text-white shadow-sm transition-all">Sign In</button>
+                <button id="auth-tab-signup" onclick="toggleAuthMode('signup')" class="py-2.5 rounded-lg text-zinc-400 hover:text-white transition-all">Create Account</button>
+            </div>
+
+            <!-- Auth Form -->
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div id="field-fullname" class="hidden">
+                    <label class="block text-xs font-medium text-zinc-400 mb-1">Full Name</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-zinc-500 text-xs"></i>
+                        <input type="text" id="input-fullname" placeholder="Alex Rivers" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-rose-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1">Email / Username</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-zinc-500 text-xs"></i>
+                        <input type="email" id="input-email" required value="alex@omniverse.app" placeholder="user@example.app" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-rose-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1">Password</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-key absolute left-3.5 top-3.5 text-zinc-500 text-xs"></i>
+                        <input type="password" id="input-password" required value="••••••••••••" placeholder="Enter secure password" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-rose-500">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs text-zinc-400 pt-1">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" checked id="remember-me" class="rounded bg-zinc-950 border-zinc-800 text-rose-600 focus:ring-rose-500">
+                        <span>Remember Me</span>
+                    </label>
+                    <a href="#" onclick="showToast('Password reset link sent to email')" class="text-rose-400 hover:underline">Forgot?</a>
+                </div>
+
+                <button type="submit" id="auth-submit-btn" class="w-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-500 hover:to-purple-500 text-white font-semibold py-3 rounded-xl text-xs transition-all shadow-lg shadow-rose-600/25 mt-2">
+                    Sign In securely
+                </button>
+            </form>
+
+            <div class="mt-6 text-center text-xs text-zinc-500">
+                <span>Or connect via secure identity providers</span>
+                <div class="flex justify-center gap-3 mt-3">
+                    <button onclick="quickAuth('Google')" class="p-2.5 bg-zinc-950 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-colors text-zinc-300 w-10 h-10 flex items-center justify-center"><i class="fa-brands fa-google text-sm"></i></button>
+                    <button onclick="quickAuth('Apple ID')" class="p-2.5 bg-zinc-950 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-colors text-zinc-300 w-10 h-10 flex items-center justify-center"><i class="fa-brands fa-apple text-sm"></i></button>
+                    <button onclick="quickAuth('Meta')" class="p-2.5 bg-zinc-950 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-colors text-zinc-300 w-10 h-10 flex items-center justify-center"><i class="fa-brands fa-facebook text-sm"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 3. MAIN DASHBOARD / HOME SCREEN APP -->
+    <!-- ========================================== -->
+    <div id="screen-main" class="hidden min-h-screen pb-24 md:pb-0 md:pl-64 flex flex-col justify-between">
+
+        <!-- Desktop Sidebar Navigation -->
+        <aside class="hidden md:flex flex-col justify-between w-64 fixed top-0 left-0 h-screen bg-zinc-900/80 backdrop-blur-xl border-r border-zinc-800/80 p-5 z-40">
+            <div>
+                <div class="flex items-center justify-between px-2 mb-8">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 via-purple-600 to-amber-500 flex items-center justify-center shadow-lg shadow-rose-500/20">
+                            <i class="fa-solid fa-infinity text-white text-xl"></i>
+                        </div>
+                        <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">OmniVerse</span>
+                    </div>
+                </div>
+
+                <nav class="space-y-1.5">
+                    <button onclick="switchTab('feed')" id="nav-feed" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all bg-rose-500/10 text-rose-400 border border-rose-500/20 shadow-sm">
+                        <i class="fa-solid fa-house text-lg w-6"></i> Feed & Stories
+                    </button>
+                    <button onclick="switchTab('threads')" id="nav-threads" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50">
+                        <i class="fa-solid fa-feather text-lg w-6"></i> Threads / Twitter
+                    </button>
+                    <button onclick="switchTab('tiktok')" id="nav-tiktok" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50">
+                        <i class="fa-solid fa-clapperboard text-lg w-6"></i> Short Clips
+                    </button>
+                    <button onclick="switchTab('twitch')" id="nav-twitch" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50">
+                        <i class="fa-solid fa-tv text-lg w-6"></i> Live Streams
+                    </button>
+                    <button onclick="switchTab('music')" id="nav-music" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50">
+                        <i class="fa-solid fa-music text-lg w-6"></i> Music & Lyria AI
+                    </button>
+                    <button onclick="switchTab('messages')" id="nav-messages" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 relative">
+                        <i class="fa-solid fa-comments text-lg w-6"></i> Messenger
+                        <span class="absolute right-3 w-2 h-2 rounded-full bg-rose-500"></span>
+                    </button>
+                    <button onclick="switchTab('profile')" id="nav-profile" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50">
+                        <i class="fa-solid fa-user text-lg w-6"></i> My Profile
+                    </button>
+                    <button onclick="openSettingsModal()" id="nav-settings" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50">
+                        <i class="fa-solid fa-gear text-lg w-6"></i> Settings & Vault
+                    </button>
+                    <button onclick="openPremiumModal()" id="nav-premium" class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all text-amber-400 hover:bg-amber-500/10 border border-amber-500/20">
+                        <span class="flex items-center gap-3.5"><i class="fa-solid fa-crown text-lg w-6"></i> Omni PRO</span>
+                        <span id="badge-pro" class="text-[10px] bg-amber-500/20 border border-amber-500/40 px-2 py-0.5 rounded-full font-bold">UPGRADE</span>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="pt-4 border-t border-zinc-800/80 flex items-center gap-3 px-2">
+                <img id="user-avatar-sidebar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces" class="w-10 h-10 rounded-full object-cover ring-2 ring-rose-500/50 cursor-pointer" onclick="switchTab('profile')" alt="Avatar">
+                <div class="overflow-hidden cursor-pointer" onclick="switchTab('profile')">
+                    <h4 id="user-name-sidebar" class="text-sm font-semibold truncate">Alex Rivers</h4>
+                    <p class="text-xs text-zinc-400 truncate" id="user-tier-badge">Standard Tier</p>
+                </div>
+                <button onclick="logout()" title="Sign Out" class="ml-auto text-zinc-400 hover:text-rose-400 p-2"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+            </div>
+        </aside>
+
+        <!-- Mobile Top Header Bar -->
+        <header class="md:hidden sticky top-0 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/80 px-4 py-3 flex items-center justify-between z-40">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-rose-500 via-purple-600 to-amber-500 flex items-center justify-center">
+                    <i class="fa-solid fa-infinity text-white text-sm"></i>
+                </div>
+                <span class="font-bold tracking-tight text-lg bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">OmniVerse</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="openPremiumModal()" class="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-crown text-xs"></i> <span id="mob-tier-badge">Pro</span>
+                </button>
+                <button onclick="openSettingsModal()" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300">
+                    <i class="fa-solid fa-gear text-xs"></i>
+                </button>
+                <img id="mob-avatar-header" onclick="switchTab('profile')" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces" class="w-8 h-8 rounded-full object-cover ring-1 ring-rose-500 cursor-pointer" alt="Avatar">
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 max-w-2xl w-full mx-auto px-0 md:px-4 py-4">
+
+            <!-- TAB 1: FEED & STORIES (Facebook + Instagram style) -->
+            <section id="tab-feed" class="space-y-6">
+                <!-- Stories Row -->
+                <div class="overflow-x-auto no-scrollbar flex gap-3 px-4 md:px-0 pb-1">
+                    <div class="flex flex-col items-center flex-shrink-0 cursor-pointer" onclick="openCreateModal('story')">
+                        <div class="w-16 h-16 rounded-full bg-zinc-900 border-2 border-dashed border-zinc-700 flex items-center justify-center text-rose-400 hover:border-rose-500 transition-colors">
+                            <i class="fa-solid fa-plus text-lg"></i>
+                        </div>
+                        <span class="text-xs mt-1 text-zinc-400 font-medium">Your Story</span>
+                    </div>
+                    <div class="flex flex-col items-center flex-shrink-0 cursor-pointer group" onclick="showToast('Viewing Marcus\'s Story')">
+                        <div class="w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-amber-500 to-rose-500 group-hover:scale-105 transition-transform">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=faces" class="w-full h-full rounded-full object-cover border-2 border-zinc-950" alt="User">
+                        </div>
+                        <span class="text-xs mt-1 text-zinc-300 font-medium truncate w-16 text-center">Marcus</span>
+                    </div>
+                    <div class="flex flex-col items-center flex-shrink-0 cursor-pointer group" onclick="showToast('Viewing Sarah\'s Story')">
+                        <div class="w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-amber-500 to-rose-500 group-hover:scale-105 transition-transform">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&fit=crop&crop=faces" class="w-full h-full rounded-full object-cover border-2 border-zinc-950" alt="User">
+                        </div>
+                        <span class="text-xs mt-1 text-zinc-300 font-medium truncate w-16 text-center">Sarah</span>
+                    </div>
+                    <div class="flex flex-col items-center flex-shrink-0 cursor-pointer group" onclick="showToast('Viewing David\'s Story')">
+                        <div class="w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-amber-500 to-rose-500 group-hover:scale-105 transition-transform">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&fit=crop&crop=faces" class="w-full h-full rounded-full object-cover border-2 border-zinc-950" alt="User">
+                        </div>
+                        <span class="text-xs mt-1 text-zinc-300 font-medium truncate w-16 text-center">David</span>
+                    </div>
+                    <div class="flex flex-col items-center flex-shrink-0 cursor-pointer group" onclick="showToast('Viewing Elena\'s Story')">
+                        <div class="w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-amber-500 to-rose-500 group-hover:scale-105 transition-transform">
+                            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&h=120&fit=crop&crop=faces" class="w-full h-full rounded-full object-cover border-2 border-zinc-950" alt="User">
+                        </div>
+                        <span class="text-xs mt-1 text-zinc-300 font-medium truncate w-16 text-center">Elena</span>
+                    </div>
+                </div>
+
+                <!-- Create Post Quick Card -->
+                <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-4 md:p-5 shadow-lg backdrop-blur-md">
+                    <div class="flex items-center gap-3 mb-3">
+                        <img id="quick-post-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces" class="w-10 h-10 rounded-full object-cover" alt="User">
+                        <input type="text" placeholder="What's happening in your universe?" onclick="openCreateModal()" readonly class="w-full bg-zinc-950/60 border border-zinc-800 rounded-full px-4 py-2.5 text-sm text-zinc-300 placeholder-zinc-500 cursor-pointer focus:outline-none hover:border-zinc-700 transition-all">
+                    </div>
+                    <div class="flex items-center justify-between pt-2 border-t border-zinc-800/60 px-1">
+                        <button onclick="openCreateModal()" class="flex items-center gap-2 text-xs font-semibold text-zinc-400 hover:text-rose-400 transition-colors">
+                            <i class="fa-solid fa-image text-rose-500"></i> Photo / Video
+                        </button>
+                        <button onclick="openCreateModal()" class="flex items-center gap-2 text-xs font-semibold text-zinc-400 hover:text-amber-400 transition-colors">
+                            <i class="fa-solid fa-music text-amber-500"></i> Lyria Music
+                        </button>
+                        <button onclick="openCreateModal()" class="flex items-center gap-2 text-xs font-semibold text-zinc-400 hover:text-purple-400 transition-colors">
+                            <i class="fa-solid fa-face-smile text-purple-500"></i> Feeling / Mood
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Feed Posts Stream -->
+                <div id="posts-container" class="space-y-6">
+                    <article class="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl overflow-hidden backdrop-blur-md shadow-xl">
+                        <div class="flex items-center justify-between p-4">
+                            <div class="flex items-center gap-3">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces" class="w-10 h-10 rounded-full object-cover" alt="Avatar">
+                                <div>
+                                    <h3 class="font-semibold text-sm flex items-center gap-1">Marcus Vance <i class="fa-solid fa-circle-check text-rose-500 text-xs"></i></h3>
+                                    <p class="text-xs text-zinc-400">2 hours ago • San Francisco, CA</p>
+                                </div>
+                            </div>
+                            <button onclick="showToast('Post options')" class="text-zinc-400 hover:text-zinc-200"><i class="fa-solid fa-ellipsis"></i></button>
+                        </div>
+
+                        <p class="px-4 text-sm text-zinc-200 leading-relaxed mb-3">
+                            Testing out the new Lyria AI music track generator right inside the app! Built a lush synthwave groove in under 10 seconds. What do you guys think of this vibe? 🌆🎧
+                        </p>
+
+                        <div class="relative aspect-[4/3] bg-zinc-950 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=600&fit=crop" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" alt="Post content">
+                            <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2 text-xs text-zinc-200">
+                                <i class="fa-solid fa-music text-amber-400 animate-pulse"></i>
+                                <span>Lyria Sound - Neon Sunset Groove</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 flex items-center justify-between text-zinc-400 text-sm border-t border-zinc-800/60">
+                            <button onclick="toggleLike(this)" class="flex items-center gap-2 hover:text-rose-500 transition-colors group">
+                                <i class="fa-regular fa-heart text-lg group-hover:scale-110 transition-transform"></i>
+                                <span class="font-medium text-xs">1,248</span>
+                            </button>
+                            <button onclick="showToast('Opening comments')" class="flex items-center gap-2 hover:text-sky-400 transition-colors">
+                                <i class="fa-regular fa-comment text-lg"></i>
+                                <span class="font-medium text-xs">342</span>
+                            </button>
+                            <button onclick="showToast('Post shared to feed')" class="flex items-center gap-2 hover:text-emerald-400 transition-colors">
+                                <i class="fa-solid fa-retweet text-lg"></i>
+                                <span class="font-medium text-xs">89</span>
+                            </button>
+                            <button onclick="showToast('Saved to collections')" class="hover:text-amber-400 transition-colors">
+                                <i class="fa-regular fa-bookmark text-lg"></i>
+                            </button>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- TAB 2: MICROBLOG / THREADS -->
+            <section id="tab-threads" class="hidden space-y-4">
+                <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-4 backdrop-blur-md">
+                    <div class="flex gap-3">
+                        <img id="thread-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces" class="w-10 h-10 rounded-full object-cover" alt="User">
+                        <div class="flex-1">
+                            <textarea id="thread-input" placeholder="What's on your mind? (Twitter / Threads style)..." rows="3" class="w-full bg-transparent border-none text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none resize-none"></textarea>
+                            <div class="flex items-center justify-between pt-3 border-t border-zinc-800/60">
+                                <div class="flex gap-3 text-rose-500 text-sm">
+                                    <button onclick="showToast('Media attached')" class="hover:text-rose-400"><i class="fa-regular fa-image"></i></button>
+                                    <button onclick="showToast('Poll created')" class="hover:text-rose-400"><i class="fa-solid fa-square-poll-horizontal"></i></button>
+                                    <button onclick="showToast('Location tagged')" class="hover:text-rose-400"><i class="fa-solid fa-location-dot"></i></button>
+                                </div>
+                                <button onclick="publishThread()" class="bg-rose-600 hover:bg-rose-500 text-white font-semibold px-4 py-1.5 rounded-full text-xs transition-colors shadow-md shadow-rose-600/20">Post Thread</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="threads-container" class="space-y-4">
+                    <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-4 backdrop-blur-md space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces" class="w-10 h-10 rounded-full object-cover" alt="Avatar">
+                                <div>
+                                    <h4 class="text-sm font-semibold flex items-center gap-1">Sarah Jenkins <i class="fa-solid fa-circle-check text-rose-500 text-xs"></i></h4>
+                                    <p class="text-xs text-zinc-400">@sarah_j • 45m</p>
+                                </div>
+                            </div>
+                            <button class="text-zinc-500 hover:text-zinc-300"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <p class="text-sm text-zinc-200 leading-relaxed">
+                            Just integrated all my favorite apps into OmniVerse. Having Messenger, Spotify, TikTok, and Twitter in one clean layout is an absolute game changer! 🚀✨
+                        </p>
+                        <div class="flex items-center justify-between pt-2 text-zinc-400 text-sm max-w-md">
+                            <button onclick="toggleLike(this)" class="flex items-center gap-1.5 hover:text-rose-500 transition-colors"><i class="fa-regular fa-heart"></i> <span class="text-xs">312</span></button>
+                            <button onclick="showToast('Reply opened')" class="flex items-center gap-1.5 hover:text-sky-400 transition-colors"><i class="fa-regular fa-comment"></i> <span class="text-xs">48</span></button>
+                            <button onclick="showToast('Reposted')" class="flex items-center gap-1.5 hover:text-emerald-400 transition-colors"><i class="fa-solid fa-retweet"></i> <span class="text-xs">19</span></button>
+                            <button onclick="showToast('Analytics opened')" class="hover:text-amber-400 transition-colors"><i class="fa-solid fa-chart-bar"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: SHORT CLIPS -->
+            <section id="tab-tiktok" class="hidden space-y-4">
+                <div class="relative w-full h-[75vh] max-h-[700px] bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800 shadow-2xl flex flex-col justify-between">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80 z-10 pointer-events-none"></div>
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=1200&fit=crop" class="absolute inset-0 w-full h-full object-cover" alt="Short Clip">
+
+                    <div class="relative z-20 p-4 flex items-center justify-between">
+                        <div class="bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 flex items-center gap-2">
+                            <i class="fa-solid fa-music text-rose-400 animate-spin text-xs"></i>
+                            <span class="text-xs font-medium text-zinc-200">Original Audio - @alexrivers</span>
+                        </div>
+                        <button onclick="showToast('Clip settings')" class="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white"><i class="fa-solid fa-ellipsis"></i></button>
+                    </div>
+
+                    <div class="relative z-20 p-4 flex items-end justify-between">
+                        <div class="space-y-2 max-w-[75%]">
+                            <div class="flex items-center gap-2">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces" class="w-8 h-8 rounded-full border border-white object-cover">
+                                <span class="font-semibold text-sm">Alex Rivers</span>
+                                <button onclick="showToast('Followed creator')" class="bg-rose-600 text-white px-2.5 py-0.5 rounded-full text-xs font-semibold">Follow</button>
+                            </div>
+                            <p class="text-xs text-zinc-200 line-clamp-2">Late night studio sessions crafting the ultimate Lyria AI soundtrack! 🎹🔥 #musicproduction #ai</p>
+                        </div>
+
+                        <div class="flex flex-col items-center gap-4">
+                            <button onclick="toggleLike(this)" class="flex flex-col items-center text-white group">
+                                <div class="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center group-hover:bg-rose-600 transition-colors">
+                                    <i class="fa-solid fa-heart text-lg text-rose-500 group-hover:text-white"></i>
+                                </div>
+                                <span class="text-[10px] mt-1 font-semibold">45.2K</span>
+                            </button>
+                            <button onclick="showToast('Comments')" class="flex flex-col items-center text-white group">
+                                <div class="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center group-hover:bg-sky-600 transition-colors">
+                                    <i class="fa-solid fa-comment text-lg"></i>
+                                </div>
+                                <span class="text-[10px] mt-1 font-semibold">1,412</span>
+                            </button>
+                            <button onclick="showToast('Clip shared')" class="flex flex-col items-center text-white group">
+                                <div class="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center group-hover:bg-emerald-600 transition-colors">
+                                    <i class="fa-solid fa-share text-lg"></i>
+                                </div>
+                                <span class="text-[10px] mt-1 font-semibold">8.3K</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: LIVE STREAMS -->
+            <section id="tab-twitch" class="hidden space-y-4">
+                <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl overflow-hidden backdrop-blur-md shadow-xl">
+                    <div class="relative aspect-video bg-zinc-950">
+                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop" class="w-full h-full object-cover" alt="Stream">
+                        <div class="absolute top-3 left-3 bg-rose-600 text-white px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-lg">
+                            <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE
+                        </div>
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-md text-xs text-zinc-200 font-medium">
+                            <i class="fa-solid fa-user text-rose-400 mr-1"></i> 14.8K watching
+                        </div>
+                    </div>
+
+                    <div class="p-4 flex items-start justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=100&h=100&fit=crop&crop=faces" class="w-12 h-12 rounded-full object-cover ring-2 ring-purple-500" alt="Streamer">
+                            <div>
+                                <h3 class="font-bold text-base">CyberGamerX</h3>
+                                <p class="text-xs text-zinc-400">Building a custom AI gaming rig & speedrunning retro classics!</p>
+                                <span class="inline-block mt-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded text-[10px] font-semibold">Gaming & Tech</span>
+                            </div>
+                        </div>
+                        <button onclick="showToast('Subscribed to channel!')" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-purple-600/20 transition-colors">Subscribe</button>
+                    </div>
+
+                    <div class="border-t border-zinc-800/80 p-3 bg-zinc-950/40 space-y-2 max-h-40 overflow-y-auto text-xs">
+                        <div class="flex items-center gap-2"><span class="font-semibold text-rose-400">PixelNinja:</span> <span class="text-zinc-300">Let's goooo! That build looks insane 🔥</span></div>
+                        <div class="flex items-center gap-2"><span class="font-semibold text-purple-400">NeonValkyrie:</span> <span class="text-zinc-300">What GPU are you putting in that case?</span></div>
+                        <div class="flex items-center gap-2"><span class="font-semibold text-amber-400">RetroWave99:</span> <span class="text-zinc-300">Great stream as always!</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: MUSIC & LYRIA -->
+            <section id="tab-music" class="hidden space-y-6">
+                <div class="bg-gradient-to-br from-purple-900/40 via-zinc-900 to-rose-950/40 border border-rose-500/30 rounded-3xl p-5 md:p-6 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-rose-400 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Lyria AI Studio
+                        </span>
+                        <span id="music-pro-lock" class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-lock text-[10px]"></i> PRO FEATURE
+                        </span>
+                    </div>
+                    <h3 class="text-xl font-bold tracking-tight text-white mb-2">Create Ultra-HD AI Tracks</h3>
+                    <p class="text-xs text-zinc-300 mb-4 leading-relaxed">Describe a vibe, genre, or tempo to generate a full 3-minute studio-grade track complete with custom cover art.</p>
+                    
+                    <div class="space-y-3">
+                        <input type="text" id="lyria-prompt" placeholder="e.g., Cyberpunk synthwave beat with heavy bass, 120 BPM..." class="w-full bg-zinc-950/80 border border-zinc-800 rounded-xl px-4 py-3 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-rose-500 transition-colors">
+                        <button onclick="generateLyriaMusic()" class="w-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-500 hover:to-purple-500 text-white font-semibold py-3 rounded-xl text-xs transition-all shadow-lg shadow-rose-600/20 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-compact-disc"></i> Generate Track with Lyria AI
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-base text-zinc-200">Trending Playlists</h3>
+                        <button onclick="showToast('Viewing all playlists')" class="text-xs font-medium text-rose-400 hover:underline">See All</button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div onclick="playTrack('Neon City Beats', 'Lyria AI', 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop')" class="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-3 flex items-center gap-3 cursor-pointer hover:border-rose-500/50 transition-all group">
+                            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&h=100&fit=crop" class="w-12 h-12 rounded-xl object-cover" alt="Playlist">
+                            <div class="overflow-hidden">
+                                <h4 class="font-semibold text-xs text-zinc-200 truncate group-hover:text-rose-400 transition-colors">Neon City Beats</h4>
+                                <p class="text-[10px] text-zinc-400">Synthwave • 24 tracks</p>
+                            </div>
+                        </div>
+                        <div onclick="playTrack('Lo-Fi Focus', 'OmniSound', 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=400&fit=crop')" class="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-3 flex items-center gap-3 cursor-pointer hover:border-rose-500/50 transition-all group">
+                            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=100&h=100&fit=crop" class="w-12 h-12 rounded-xl object-cover" alt="Playlist">
+                            <div class="overflow-hidden">
+                                <h4 class="font-semibold text-xs text-zinc-200 truncate group-hover:text-rose-400 transition-colors">Lo-Fi Focus</h4>
+                                <p class="text-[10px] text-zinc-400">Chill • 42 tracks</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: MESSENGER -->
+            <section id="tab-messages" class="hidden space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-lg text-zinc-200 flex items-center gap-2">
+                        <span>Chats</span>
+                        <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-normal">Encrypted</span>
+                    </h3>
+                    <button onclick="showToast('New message modal')" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-rose-400"><i class="fa-solid fa-pen-to-square text-xs"></i></button>
+                </div>
+
+                <div class="space-y-2">
+                    <div onclick="openChat('Marcus Vance')" class="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-3 flex items-center gap-3 cursor-pointer hover:border-zinc-700 transition-all">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces" class="w-12 h-12 rounded-full object-cover" alt="Avatar">
+                            <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-zinc-950"></span>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <div class="flex items-center justify-between mb-0.5">
+                                <h4 class="font-semibold text-sm text-zinc-200 truncate">Marcus Vance</h4>
+                                <span class="text-[10px] text-zinc-500">12:42 PM</span>
+                            </div>
+                            <p class="text-xs text-zinc-400 truncate">Check out that new Lyria beat I sent over!</p>
+                        </div>
+                    </div>
+                    <div onclick="openChat('Sarah Jenkins')" class="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-3 flex items-center gap-3 cursor-pointer hover:border-zinc-700 transition-all">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces" class="w-12 h-12 rounded-full object-cover" alt="Avatar">
+                            <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-zinc-950"></span>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <div class="flex items-center justify-between mb-0.5">
+                                <h4 class="font-semibold text-sm text-zinc-200 truncate">Sarah Jenkins</h4>
+                                <span class="text-[10px] text-zinc-500">Yesterday</span>
+                            </div>
+                            <p class="text-xs text-zinc-400 truncate">OmniVerse is honestly so clean. Love it!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 7: PROFILE PAGE SECTION -->
+            <section id="tab-profile" class="hidden space-y-6">
+                <!-- Profile Header Banner -->
+                <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-3xl overflow-hidden backdrop-blur-md shadow-2xl relative">
+                    <div class="h-32 md:h-40 bg-gradient-to-r from-rose-600 via-purple-600 to-amber-500 relative">
+                        <button onclick="showToast('Cover photo updated')" class="absolute top-3 right-3 bg-black/40 backdrop-blur-md hover:bg-black/60 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition-all">
+                            <i class="fa-solid fa-camera mr-1"></i> Edit Cover
+                        </button>
+                    </div>
+
+                    <div class="px-5 pb-5 pt-0 relative">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between -mt-12 sm:-mt-14 mb-4 gap-4">
+                            <div class="relative">
+                                <img id="profile-page-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=faces" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-zinc-950 object-cover shadow-xl">
+                                <button onclick="showToast('Avatar changed')" class="absolute bottom-1 right-1 w-7 h-7 bg-rose-600 rounded-full text-white flex items-center justify-center text-xs shadow-md"><i class="fa-solid fa-pen"></i></button>
+                            </div>
+                            <div class="flex items-center gap-2.5 w-full sm:w-auto">
+                                <button onclick="openSettingsModal()" class="flex-1 sm:flex-none px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold rounded-xl transition-all border border-zinc-700 flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-gear"></i> Settings
+                                </button>
+                                <button onclick="openPremiumModal()" class="flex-1 sm:flex-none px-4 py-2 bg-gradient-to-r from-amber-500 to-rose-600 text-white text-xs font-semibold rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-crown"></i> Omni PRO
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- User Info -->
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <h2 id="profile-page-name" class="text-xl font-bold text-white">Alex Rivers</h2>
+                                <span id="profile-page-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">PRO VIP</span>
+                            </div>
+                            <p id="profile-page-handle" class="text-xs text-zinc-400">@alexrivers_vip • Joined 2026</p>
+                            <p id="profile-page-bio" class="text-xs text-zinc-300 leading-relaxed max-w-lg">
+                                Creative Technologist & Music Producer. Crafting AI soundtracks & building modern super-apps. 🚀🎧
+                            </p>
+
+                            <!-- Social Stats Bar -->
+                            <div class="flex items-center gap-6 pt-3 text-xs text-zinc-400 border-t border-zinc-800/80">
+                                <div><strong class="text-white font-bold text-sm">1.4K</strong> Following</div>
+                                <div><strong class="text-white font-bold text-sm">28.9K</strong> Followers</div>
+                                <div><strong class="text-white font-bold text-sm">182K</strong> Likes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Tabs (Grid, Posts, Music) -->
+                <div class="space-y-4">
+                    <div class="flex border-b border-zinc-800 text-xs font-semibold">
+                        <button class="pb-3 border-b-2 border-rose-500 text-rose-400 px-4">All Posts</button>
+                        <button onclick="showToast('Showing Media Gallery')" class="pb-3 text-zinc-500 hover:text-zinc-300 px-4">Photos & Clips</button>
+                        <button onclick="showToast('Showing Lyria Audio Tracks')" class="pb-3 text-zinc-500 hover:text-zinc-300 px-4">Tracks</button>
+                    </div>
+
+                    <!-- Media Grid Highlights -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=400&fit=crop" class="w-full aspect-square rounded-2xl object-cover hover:opacity-80 cursor-pointer transition-opacity">
+                        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=400&fit=crop" class="w-full aspect-square rounded-2xl object-cover hover:opacity-80 cursor-pointer transition-opacity">
+                        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop" class="w-full aspect-square rounded-2xl object-cover hover:opacity-80 cursor-pointer transition-opacity">
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Global Persistent Bottom Music Player Bar -->
+        <div id="music-player-bar" class="fixed bottom-16 md:bottom-0 left-0 md:left-64 right-0 bg-zinc-900/90 backdrop-blur-xl border-t border-zinc-800 px-4 py-2.5 z-30 flex items-center justify-between shadow-2xl">
+            <div class="flex items-center gap-3 overflow-hidden">
+                <img id="player-art" src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&h=100&fit=crop" class="w-11 h-11 rounded-xl object-cover shadow-md flex-shrink-0" alt="Cover">
+                <div class="overflow-hidden">
+                    <h4 id="player-title" class="font-semibold text-xs text-zinc-100 truncate">Neon City Beats</h4>
+                    <p id="player-artist" class="text-[10px] text-zinc-400 truncate">Lyria AI • Spotify & Apple Music</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="showToast('Previous track')" class="text-zinc-400 hover:text-white hidden sm:block"><i class="fa-solid fa-backward-step"></i></button>
+                <button onclick="togglePlayState()" id="play-btn" class="w-10 h-10 rounded-full bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center shadow-md shadow-rose-600/30 transition-transform active:scale-95"><i class="fa-solid fa-pause text-sm"></i></button>
+                <button onclick="showToast('Next track')" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-forward-step"></i></button>
+            </div>
+        </div>
+
+        <!-- Mobile Bottom Navigation Bar -->
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-800/80 px-2 py-2 flex items-center justify-around z-40">
+            <button onclick="switchTab('feed')" id="mob-nav-feed" class="flex flex-col items-center text-rose-500 p-1">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Feed</span>
+            </button>
+            <button onclick="switchTab('threads')" id="mob-nav-threads" class="flex flex-col items-center text-zinc-400 p-1">
+                <i class="fa-solid fa-feather text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Threads</span>
+            </button>
+            <button onclick="switchTab('tiktok')" id="mob-nav-tiktok" class="flex flex-col items-center text-zinc-400 p-1">
+                <i class="fa-solid fa-clapperboard text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Clips</span>
+            </button>
+            <button onclick="switchTab('music')" id="mob-nav-music" class="flex flex-col items-center text-zinc-400 p-1">
+                <i class="fa-solid fa-music text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Music</span>
+            </button>
+            <button onclick="switchTab('messages')" id="mob-nav-messages" class="flex flex-col items-center text-zinc-400 p-1">
+                <i class="fa-solid fa-comments text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Chat</span>
+            </button>
+            <button onclick="switchTab('profile')" id="mob-nav-profile" class="flex flex-col items-center text-zinc-400 p-1">
+                <i class="fa-solid fa-user text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Profile</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Modal / Create Post Dialog -->
+    <div id="create-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-zinc-800 w-full max-w-lg rounded-3xl p-5 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+                <h3 class="font-bold text-sm text-zinc-100">Create Omni Post</h3>
+                <button onclick="closeCreateModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <textarea id="modal-text" placeholder="Share your thoughts, photos, or Lyria music..." rows="4" class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-3 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-rose-500 resize-none"></textarea>
+            <div class="flex items-center justify-between pt-2">
+                <div class="flex gap-3 text-rose-500">
+                    <button onclick="showToast('Add photo/video')" class="hover:text-rose-400"><i class="fa-solid fa-image text-lg"></i></button>
+                    <button onclick="showToast('Add Lyria track')" class="hover:text-amber-400"><i class="fa-solid fa-music text-lg"></i></button>
+                    <button onclick="showToast('Add mood')" class="hover:text-purple-400"><i class="fa-solid fa-face-smile text-lg"></i></button>
+                </div>
+                <button onclick="submitModalPost()" class="bg-rose-600 hover:bg-rose-500 text-white px-5 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-rose-600/30 transition-colors">Publish Everywhere</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal / SETTINGS & PRIVACY VAULT -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-zinc-800 w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+                <div class="flex items-center gap-2 text-white font-bold text-base">
+                    <i class="fa-solid fa-shield-halved text-rose-500"></i> Settings & Security Vault
+                </div>
+                <button onclick="closeSettingsModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <!-- Settings Options List -->
+            <div class="space-y-4 text-xs">
+                <!-- Account & Profile Editing -->
+                <div class="space-y-2">
+                    <h4 class="text-zinc-400 font-bold uppercase tracking-wider text-[10px]">Account Profile</h4>
+                    <div class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 space-y-3">
+                        <div>
+                            <label class="block text-zinc-400 mb-1">Display Name</label>
+                            <input type="text" id="setting-name" value="Alex Rivers" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                        <div>
+                            <label class="block text-zinc-400 mb-1">Bio</label>
+                            <textarea id="setting-bio" rows="2" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-rose-500 resize-none">Creative Technologist & Music Producer. Crafting AI soundtracks & building modern super-apps. 🚀🎧</textarea>
+                        </div>
+                        <button onclick="saveProfileSettings()" class="bg-rose-600 hover:bg-rose-500 text-white font-semibold px-4 py-2 rounded-xl text-xs transition-colors">Save Profile Info</button>
+                    </div>
+                </div>
+
+                <!-- Tight Security Settings -->
+                <div class="space-y-2">
+                    <h4 class="text-zinc-400 font-bold uppercase tracking-wider text-[10px]">Security & Personal Vault</h4>
+                    <div class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h5 class="font-bold text-white">Two-Factor Authentication (2FA)</h5>
+                                <p class="text-[10px] text-zinc-400">Require authenticator code for new logins</p>
+                            </div>
+                            <input type="checkbox" checked onchange="showToast('2FA Status Updated')" class="rounded bg-zinc-900 border-zinc-800 text-rose-600 focus:ring-rose-500 w-4 h-4">
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-zinc-800/80">
+                            <div>
+                                <h5 class="font-bold text-white">Biometric Login (Face ID / Touch ID)</h5>
+                                <p class="text-[10px] text-zinc-400">Instant login using hardware biometric sensors</p>
+                            </div>
+                            <input type="checkbox" checked onchange="showToast('Biometric status toggled')" class="rounded bg-zinc-900 border-zinc-800 text-rose-600 focus:ring-rose-500 w-4 h-4">
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-zinc-800/80">
+                            <div>
+                                <h5 class="font-bold text-white">End-to-End Chat Encryption</h5>
+                                <p class="text-[10px] text-zinc-400">Lock personal messages behind vault keys</p>
+                            </div>
+                            <span class="text-emerald-400 font-bold text-[10px] bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">ENABLED</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Third Party Connections -->
+                <div class="space-y-2">
+                    <h4 class="text-zinc-400 font-bold uppercase tracking-wider text-[10px]">Connected App Accounts</h4>
+                    <div class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="flex items-center gap-2"><i class="fa-brands fa-spotify text-emerald-500"></i> Spotify & Apple Music</span>
+                            <span class="text-zinc-400">Linked</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="flex items-center gap-2"><i class="fa-brands fa-twitch text-purple-500"></i> Twitch Streaming</span>
+                            <span class="text-zinc-400">Linked</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal / PREMIUM UPGRADE -->
+    <div id="premium-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-amber-500/30 w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-5 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl"></div>
+            
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+                <div class="flex items-center gap-2 text-amber-400 font-bold text-base">
+                    <i class="fa-solid fa-crown"></i> OmniVerse Premium PRO
+                </div>
+                <button onclick="closePremiumModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="space-y-3">
+                <div class="p-3 bg-zinc-950 rounded-2xl border border-zinc-800 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-white">Unlimited Lyria AI Track Generation</h4>
+                        <p class="text-[10px] text-zinc-400">Produce endless 3-minute 320kbps tracks</p>
+                    </div>
+                </div>
+                <div class="p-3 bg-zinc-950 rounded-2xl border border-zinc-800 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-bolt text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-white">4K UHD Twitch Live Streams</h4>
+                        <p class="text-[10px] text-zinc-400">Ad-free streaming with sub-10ms latency</p>
+                    </div>
+                </div>
+                <div class="p-3 bg-zinc-950 rounded-2xl border border-zinc-800 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-shield-halved text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-white">Vault Security & Blue Badge</h4>
+                        <p class="text-[10px] text-zinc-400">Verified identity status across all hubs</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <div class="flex items-baseline justify-between mb-3">
+                    <span class="text-xs text-zinc-400">Monthly Plan</span>
+                    <span class="text-xl font-bold text-white">$9.99 <span class="text-xs font-normal text-zinc-400">/ month</span></span>
+                </div>
+
+                <button id="btn-subscribe" onclick="processPremiumPayment()" class="w-full bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 hover:opacity-95 text-white font-bold py-3 rounded-xl text-xs shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-credit-card"></i> Upgrade Now (Secure Checkout)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Local State Management
+        let appState = {
+            isLoggedIn: false,
+            isPremium: false,
+            user: null
+        };
+
+        window.onload = function() {
+            checkExistingAuth();
+        };
+
+        function checkExistingAuth() {
+            const savedUser = localStorage.getItem('omniverse_user');
+            if (savedUser) {
+                try {
+                    appState.user = JSON.parse(savedUser);
+                    appState.isLoggedIn = true;
+                    appState.isPremium = !!appState.user.isPremium;
+                } catch(e) {
+                    appState.isLoggedIn = false;
+                }
+            }
+        }
+
+        function launchApp() {
+            document.getElementById('screen-launcher').classList.add('hidden');
+            const splash = document.getElementById('screen-splash');
+            splash.classList.remove('hidden');
+            splash.classList.add('flex');
+
+            setTimeout(() => {
+                splash.classList.remove('flex');
+                splash.classList.add('hidden');
+
+                if (appState.isLoggedIn) {
+                    showMainApp();
+                } else {
+                    showAuthScreen();
+                }
+            }, 1500);
+        }
+
+        function showAuthScreen() {
+            const auth = document.getElementById('screen-auth');
+            auth.classList.remove('hidden');
+            auth.classList.add('flex');
+        }
+
+        function toggleAuthMode(mode) {
+            const loginTab = document.getElementById('auth-tab-login');
+            const signupTab = document.getElementById('auth-tab-signup');
+            const fullnameField = document.getElementById('field-fullname');
+            const submitBtn = document.getElementById('auth-submit-btn');
+
+            if (mode === 'signup') {
+                loginTab.className = "py-2.5 rounded-lg text-zinc-400 hover:text-white transition-all";
+                signupTab.className = "py-2.5 rounded-lg bg-rose-600 text-white shadow-sm transition-all";
+                fullnameField.classList.remove('hidden');
+                submitBtn.textContent = "Create Account & Encrypt Vault";
+            } else {
+                signupTab.className = "py-2.5 rounded-lg text-zinc-400 hover:text-white transition-all";
+                loginTab.className = "py-2.5 rounded-lg bg-rose-600 text-white shadow-sm transition-all";
+                fullnameField.classList.add('hidden');
+                submitBtn.textContent = "Sign In securely";
+            }
+        }
+
+        function handleAuthSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('input-email').value;
+            const nameInput = document.getElementById('input-fullname').value;
+            
+            const name = nameInput || email.split('@')[0] || "Alex Rivers";
+
+            appState.user = {
+                name: name,
+                email: email,
+                bio: "Creative Technologist & Music Producer. Crafting AI soundtracks & building modern super-apps. 🚀🎧",
+                isPremium: false
+            };
+            appState.isLoggedIn = true;
+
+            if (document.getElementById('remember-me').checked) {
+                localStorage.setItem('omniverse_user', JSON.stringify(appState.user));
+            }
+
+            document.getElementById('screen-auth').classList.remove('flex');
+            document.getElementById('screen-auth').classList.add('hidden');
+
+            showToast(`Welcome back, ${appState.user.name}! Encryption key generated.`);
+            showMainApp();
+        }
+
+        function quickAuth(provider) {
+            appState.user = {
+                name: `${provider} Member`,
+                email: `user@${provider.toLowerCase().replace(' ', '')}.com`,
+                bio: "OmniVerse explorer.",
+                isPremium: false
+            };
+            appState.isLoggedIn = true;
+            localStorage.setItem('omniverse_user', JSON.stringify(appState.user));
+
+            document.getElementById('screen-auth').classList.remove('flex');
+            document.getElementById('screen-auth').classList.add('hidden');
+
+            showToast(`Authenticated via ${provider}`);
+            showMainApp();
+        }
+
+        function showMainApp() {
+            document.getElementById('screen-main').classList.remove('hidden');
+            updateUIUserTiers();
+        }
+
+        function logout() {
+            appState.isLoggedIn = false;
+            appState.isPremium = false;
+            localStorage.removeItem('omniverse_user');
+
+            document.getElementById('screen-main').classList.add('hidden');
+            document.getElementById('screen-launcher').classList.remove('hidden');
+            showToast('Signed out securely');
+        }
+
+        function updateUIUserTiers() {
+            if (appState.user) {
+                document.getElementById('user-name-sidebar').textContent = appState.user.name;
+                document.getElementById('profile-page-name').textContent = appState.user.name;
+                document.getElementById('setting-name').value = appState.user.name;
+                if (appState.user.bio) {
+                    document.getElementById('profile-page-bio').textContent = appState.user.bio;
+                    document.getElementById('setting-bio').value = appState.user.bio;
+                }
+            }
+            const tierSidebar = document.getElementById('user-tier-badge');
+            const mobTier = document.getElementById('mob-tier-badge');
+            const badgePro = document.getElementById('badge-pro');
+            const profileBadge = document.getElementById('profile-page-badge');
+
+            if (appState.isPremium) {
+                tierSidebar.textContent = "Omni PRO Tier";
+                tierSidebar.className = "text-xs text-amber-400 font-bold truncate";
+                mobTier.textContent = "PRO ACTIVE";
+                badgePro.textContent = "ACTIVE";
+                badgePro.className = "text-[10px] bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 px-2 py-0.5 rounded-full font-bold";
+                if (profileBadge) {
+                    profileBadge.textContent = "PRO VIP";
+                    profileBadge.className = "px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30";
+                }
+            } else {
+                tierSidebar.textContent = "Standard Tier";
+                tierSidebar.className = "text-xs text-zinc-400 truncate";
+                mobTier.textContent = "Upgrade";
+                badgePro.textContent = "UPGRADE";
+                badgePro.className = "text-[10px] bg-amber-500/20 border border-amber-500/40 text-amber-300 px-2 py-0.5 rounded-full font-bold";
+                if (profileBadge) {
+                    profileBadge.textContent = "STANDARD Tier";
+                    profileBadge.className = "px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-800 text-zinc-300 border border-zinc-700";
+                }
+            }
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settings-modal').classList.remove('hidden');
+            document.getElementById('settings-modal').classList.add('flex');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settings-modal').classList.remove('flex');
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        function saveProfileSettings() {
+            const newName = document.getElementById('setting-name').value.trim();
+            const newBio = document.getElementById('setting-bio').value.trim();
+
+            if (newName && appState.user) {
+                appState.user.name = newName;
+                appState.user.bio = newBio;
+                localStorage.setItem('omniverse_user', JSON.stringify(appState.user));
+                updateUIUserTiers();
+                closeSettingsModal();
+                showToast('Profile and security vault settings saved!');
+            }
+        }
+
+        function openPremiumModal() {
+            if (appState.isPremium) {
+                showToast("You are already enjoying OmniVerse PRO!");
+                return;
+            }
+            document.getElementById('premium-modal').classList.remove('hidden');
+            document.getElementById('premium-modal').classList.add('flex');
+        }
+
+        function closePremiumModal() {
+            document.getElementById('premium-modal').classList.remove('flex');
+            document.getElementById('premium-modal').classList.add('hidden');
+        }
+
+        function processPremiumPayment() {
+            const btn = document.getElementById('btn-subscribe');
+            btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Processing Secure Payment...';
+            
+            setTimeout(() => {
+                appState.isPremium = true;
+                if (appState.user) appState.user.isPremium = true;
+                localStorage.setItem('omniverse_user', JSON.stringify(appState.user));
+                
+                closePremiumModal();
+                updateUIUserTiers();
+                btn.innerHTML = '<i class="fa-solid fa-credit-card"></i> Upgrade Now (Secure Checkout)';
+                showToast('🎉 Omni PRO Subscription Activated!');
+            }, 1800);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toast-message');
+            msg.textContent = message;
+            toast.classList.remove('translate-y-[-200%]');
+            toast.classList.add('translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0');
+                toast.classList.add('translate-y-[-200%]');
+            }, 3000);
+        }
+
+        function switchTab(tabId) {
+            const tabs = ['feed', 'threads', 'tiktok', 'twitch', 'music', 'messages', 'profile'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if (el) el.classList.add('hidden');
+                
+                const navEl = document.getElementById(`nav-${t}`);
+                if (navEl) {
+                    navEl.className = "w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50";
+                }
+                const mobEl = document.getElementById(`mob-nav-${t}`);
+                if (mobEl) {
+                    mobEl.className = "flex flex-col items-center text-zinc-400 p-1";
+                }
+            });
+
+            const activeEl = document.getElementById(`tab-${tabId}`);
+            if (activeEl) activeEl.classList.remove('hidden');
+
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.className = "w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all bg-rose-500/10 text-rose-400 border border-rose-500/20 shadow-sm";
+            }
+
+            const activeMob = document.getElementById(`mob-nav-${tabId}`);
+            if (activeMob) {
+                activeMob.className = "flex flex-col items-center text-rose-500 p-1";
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleLike(btn) {
+            const icon = btn.querySelector('i');
+            const count = btn.querySelector('span');
+            if (icon.classList.contains('fa-regular')) {
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid', 'text-rose-500');
+                if (count) count.textContent = (parseInt(count.textContent.replace(/,/g, '')) + 1).toLocaleString();
+                showToast('Liked post');
+            } else {
+                icon.classList.remove('fa-solid', 'text-rose-500');
+                icon.classList.add('fa-regular');
+                if (count) count.textContent = (parseInt(count.textContent.replace(/,/g, '')) - 1).toLocaleString();
+            }
+        }
+
+        let isPlaying = true;
+        function togglePlayState() {
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('play-btn').querySelector('i');
+            if (isPlaying) {
+                btn.className = "fa-solid fa-pause text-sm";
+                showToast('Music playing');
+            } else {
+                btn.className = "fa-solid fa-play text-sm";
+                showToast('Music paused');
+            }
+        }
+
+        function playTrack(title, artist, cover) {
+            document.getElementById('player-title').textContent = title;
+            document.getElementById('player-artist').textContent = `${artist} • Spotify & Apple Music`;
+            document.getElementById('player-art').src = cover;
+            isPlaying = true;
+            document.getElementById('play-btn').querySelector('i').className = "fa-solid fa-pause text-sm";
+            showToast(`Now playing: ${title}`);
+        }
+
+        function generateLyriaMusic() {
+            if (!appState.isPremium) {
+                openPremiumModal();
+                showToast('Upgrade to Omni PRO to unlock Lyria AI Studio');
+                return;
+            }
+
+            const prompt = document.getElementById('lyria-prompt').value.trim();
+            if (!prompt) {
+                showToast('Please enter a vibe or prompt for Lyria AI');
+                return;
+            }
+            showToast('Generating 3-minute Lyria AI track & cover art...');
+            setTimeout(() => {
+                playTrack(prompt.slice(0, 25) + '...', 'Lyria AI PRO', 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=400&fit=crop');
+                showToast('Lyria PRO track successfully generated!');
+            }, 2000);
+        }
+
+        function openCreateModal() {
+            document.getElementById('create-modal').classList.remove('hidden');
+            document.getElementById('create-modal').classList.add('flex');
+        }
+
+        function closeCreateModal() {
+            document.getElementById('create-modal').classList.remove('flex');
+            document.getElementById('create-modal').classList.add('hidden');
+        }
+
+        function submitModalPost() {
+            const text = document.getElementById('modal-text').value.trim();
+            if (!text) {
+                showToast('Please write something first');
+                return;
+            }
+            closeCreateModal();
+            document.getElementById('modal-text').value = '';
+            showToast('Published successfully across your feed and threads!');
+        }
+
+        function publishThread() {
+            const input = document.getElementById('thread-input');
+            if (!input.value.trim()) {
+                showToast('Thread cannot be empty');
+                return;
+            }
+            showToast('Thread posted successfully!');
+            input.value = '';
+        }
+
+        function openChat(name) {
+            showToast(`Opening encrypted Messenger chat with ${name}`);
+        }
+    </script>
+</body>
+</html>

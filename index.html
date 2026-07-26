@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OmniVerse - Super App Hub</title>
 
-    <!-- PWA Manifest & Meta Tags -->
+    <!-- PWA Manifest & Meta Tags with Infinity Gradient Icon -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#f43f5e">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="OmniVerse">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f30c.png">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><rect width='512' height='512' rx='120' fill='url(%23grad)'/><defs><linearGradient id='grad' x1='0%' y1='100%' x2='100%' y2='0%'><stop offset='0%' style='stop-color:%23f43f5e;stop-opacity:1'/><stop offset='50%' style='stop-color:%239333ea;stop-opacity:1'/><stop offset='100%' style='stop-color:%23f59e0b;stop-opacity:1'/></linearGradient></defs><path d='M352 176c-38.1 0-71.5 20.4-96 51.2-24.5-30.8-57.9-51.2-96-51.2-61.9 0-112 50.1-112 112s50.1 112 112 112c38.1 0 71.5-20.4 96-51.2 24.5 30.8 57.9 51.2 96 51.2 61.9 0 112-50.1 112-112s-50.1-112-112-112zm-192 160c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm192 0c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48z' fill='white'/></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><rect width='512' height='512' rx='120' fill='url(%23grad)'/><defs><linearGradient id='grad' x1='0%' y1='100%' x2='100%' y2='0%'><stop offset='0%' style='stop-color:%23f43f5e;stop-opacity:1'/><stop offset='50%' style='stop-color:%239333ea;stop-opacity:1'/><stop offset='100%' style='stop-color:%23f59e0b;stop-opacity:1'/></linearGradient></defs><path d='M352 176c-38.1 0-71.5 20.4-96 51.2-24.5-30.8-57.9-51.2-96-51.2-61.9 0-112 50.1-112 112s50.1 112 112 112c38.1 0 71.5-20.4 96-51.2 24.5 30.8 57.9 51.2 96 51.2 61.9 0 112-50.1 112-112s-50.1-112-112-112zm-192 160c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm192 0c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48z' fill='white'/></svg>">
 
     <!-- Tailwind CSS v4 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -176,17 +177,15 @@
             </div>
         </aside>
 
-        <!-- Main Content Stream -->
         <main class="flex-1 max-w-2xl w-full mx-auto px-0 md:px-4 py-4">
             <section id="tab-feed" class="space-y-6">
                 <div class="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-4 shadow-lg backdrop-blur-md">
-                    <p class="text-sm text-zinc-200">Welcome to OmniVerse! Your Super App is fully PWA enabled and ready for Google Play & Apple App Store packaging.</p>
+                    <p class="text-sm text-zinc-200">Welcome to OmniVerse! Your Infinity logo icon is active and ready for PWABuilder and Home Screen installation.</p>
                 </div>
             </section>
         </main>
     </div>
 
-    <!-- Register Service Worker Script -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
